@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { loginSuccess } from '../redux/authSlice'
+import { login } from '../service/user'
 
 function SignIn() {
   const [username, setUsername] = useState('')
@@ -9,30 +10,20 @@ function SignIn() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+ const handleSubmit = async (e) => {
+  e.preventDefault()
 
-    try {
-      const response = await fetch('http://localhost:3001/api/v1/user/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email: username, password }),
-      })
-
-      const data = await response.json()
-
-      if (response.ok) {
-        dispatch(loginSuccess(data.body.token))
-        navigate('/profile')
-      } else {
-        alert('Login failed: ' + data.message)
-      }
-    } catch (err) {
-      alert('Error: ' + err.message)
-    }
+  try {
+    const body = await login(username, password)
+    dispatch(loginSuccess({
+      token: body.token,
+      user: { firstName: body.firstName }
+    }))
+    navigate('/profile')
+  } catch (err) {
+    alert('Login failed: ' + err.message)
   }
+}
 
   return (
     <main className="main bg-dark">

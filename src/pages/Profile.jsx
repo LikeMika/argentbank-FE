@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { getProfile } from '../service/user'
+import { setUser } from '../redux/authSlice'
 
 function Profile() {
   const token = useSelector((state) => state.auth.token)
   const navigate = useNavigate()
-  const [user, setUser] = useState(null)
+  const dispatch = useDispatch()
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     if (!token) {
@@ -13,34 +16,28 @@ function Profile() {
       return
     }
 
-    const fetchUserProfile = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/v1/user/profile', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-        })
-
-        const data = await response.json()
-        if (response.ok) {
-          setUser(data.body)
-        } else {
-          console.error('Error fetching profile:', data.message)
-          navigate('/sign-in')
-        }
+        const userData = await getProfile(token)
+        dispatch(setUser(userData))
+        setLoading(false)
       } catch (err) {
-        console.error('Error:', err)
+        console.error('Error:', err.message)
         navigate('/sign-in')
       }
     }
 
-    fetchUserProfile()
-  }, [token, navigate])
+    fetchData()
+  }, [token, navigate, dispatch])
 
-  if (!user) {
-    return <main className="main bg-dark"><p style={{ color: 'white' }}>Loading...</p></main>
+  const user = useSelector((state) => state.auth.user)
+
+  if (loading || !user) {
+    return (
+      <main className="main bg-dark">
+        <p style={{ color: 'white' }}>Loading...</p>
+      </main>
+    )
   }
 
   return (
@@ -55,7 +52,6 @@ function Profile() {
 
       <h2 className="sr-only">Accounts</h2>
 
-      {/* Section compte #1 */}
       <section className="account">
         <div className="account-content-wrapper">
           <h3 className="account-title">Argent Bank Checking (x8349)</h3>
@@ -67,7 +63,6 @@ function Profile() {
         </div>
       </section>
 
-      {/* Section compte #2 */}
       <section className="account">
         <div className="account-content-wrapper">
           <h3 className="account-title">Argent Bank Savings (x6712)</h3>
@@ -79,7 +74,6 @@ function Profile() {
         </div>
       </section>
 
-      {/* Section compte #3 */}
       <section className="account">
         <div className="account-content-wrapper">
           <h3 className="account-title">Argent Bank Credit Card (x8349)</h3>
