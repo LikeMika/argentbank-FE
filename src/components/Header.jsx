@@ -7,7 +7,7 @@ import { faUserCircle, faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 
 function Header() {
   const token = useSelector((state) => state.auth.token)
-  const user = useSelector((state) => state.auth.user)
+  const user = useSelector((state) => state.profile.user)
   const dispatch = useDispatch()
   const navigate = useNavigate()
 

@@ -2,10 +2,13 @@ import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { getProfile } from '../service/user'
-import { setUser } from '../redux/authSlice'
+import { setProfile } from '../redux/profileSlice'
+
+
 
 function Profile() {
   const token = useSelector((state) => state.auth.token)
+ 
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [loading, setLoading] = useState(true)
@@ -19,7 +22,7 @@ function Profile() {
     const fetchData = async () => {
       try {
         const userData = await getProfile(token)
-        dispatch(setUser(userData))
+        dispatch(setProfile(userData))
         setLoading(false)
       } catch (err) {
         console.error('Error:', err.message)
@@ -30,7 +33,7 @@ function Profile() {
     fetchData()
   }, [token, navigate, dispatch])
 
-  const user = useSelector((state) => state.auth.user)
+ const user = useSelector((state) => state.profile.user)
 
   if (loading || !user) {
     return (

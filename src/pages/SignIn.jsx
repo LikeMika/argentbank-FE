@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { loginSuccess } from '../redux/authSlice'
+import { setProfile } from '../redux/profileSlice'
 import { login } from '../service/user'
 
 function SignIn() {
@@ -10,20 +11,24 @@ function SignIn() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
- const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
   e.preventDefault()
 
   try {
     const body = await login(username, password)
-    dispatch(loginSuccess({
-      token: body.token,
-      user: { firstName: body.firstName }
+    dispatch(loginSuccess(body.token))
+    dispatch(setProfile({
+      firstName: body.firstName,
+      lastName: body.lastName,
+      email: body.email,
     }))
+
     navigate('/profile')
   } catch (err) {
     alert('Login failed: ' + err.message)
   }
 }
+
 
   return (
     <main className="main bg-dark">
