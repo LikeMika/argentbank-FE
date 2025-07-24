@@ -25,3 +25,22 @@ export async function getProfile(token) {
   if (!response.ok) throw new Error(data.message)
   return data.body
 }
+
+export async function updateProfile(token, firstName, lastName) {
+  const response = await fetch(`${API_URL}/profile`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ firstName, lastName }),
+  })
+
+  if (!response.ok) {
+    const error = await response.json()
+    throw new Error(error.message || 'Failed to update profile')
+  }
+
+  const data = await response.json()
+  return data.body
+}

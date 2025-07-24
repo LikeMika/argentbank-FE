@@ -289,3 +289,27 @@ body {
     width: 200px;
   }
 }
+
+.edit-name-input {
+  margin: 0.5rem;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.edit-name-actions {
+  margin-top: 1rem;
+}
+
+.edit-name-actions .edit-button {
+  margin-right: 1rem;
+}
+
+.cancel-button {
+  background-color: gray;
+  border-color: gray;
+  color: white;
+  font-weight: bold;
+  padding: 10px;
+}
